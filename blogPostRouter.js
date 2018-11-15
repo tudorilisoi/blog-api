@@ -54,7 +54,7 @@ router.delete('/:id', (req, res) => {                                     //DELE
 
 
 router.put('/:id', jsonParser, (req, res) => {                                        //PUT request - update blog post
-    const requiredFields = ['title', 'content', 'author'];
+    const requiredFields = ['id', 'title', 'content', 'author', 'publishDate'];
     for (let i = 0; i < requiredFields.length; i++) {
         const field = requiredFields[i];
         if (!(field in req.body)) {
