@@ -8,6 +8,7 @@ const app = express();                                   //create new express ap
 const blogPostRouter = require('./blogPostRouter');      //import blog post router
 
 app.use(morgan('common'));                               //HTTP logger
+app.use(express.static('public'));                       //serve public assets
 
 app.use('/blog-posts', blogPostRouter);                  //route /blog-posts requests to router
 
