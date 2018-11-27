@@ -13,6 +13,37 @@ app.use(express.static('public'));                       //serve public assets
 app.use('/blog-posts', blogPostRouter);                  //route /blog-posts requests to router
 
 
-app.listen(process.env.PORT || 8080, () => {             //listen for requests
-    console.log(`Your app is listening on port ${process.env.PORT || 8080}`);
+
+
+let server;                                              //declare server object
+
+function runServer() {                                   //starts server & returns a promise for testing
+  const port = process.env.PORT || 8080;
+  return new Promise((resolve, reject) => {
+    server = app.listen(port, () => {
+      console.log(`Your app is listening on port ${port}`);
+      resolve(server);
+    }).on('Error', (err) => {
+      reject(err);
+    });
   });
+}
+
+function closeServer() {                                //closes server & returns a promise
+  return new Promise((resolve, reject) => {
+    console.log('Closing server');
+    server.close(err => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve();
+    });
+  });
+}
+
+if (require.main === module) {                  //allows us to call runServer if module is being called by node server.js
+  runServer().catch(err => console.log(err));
+}
+
+module.exports = { app, runServer, closeServer };
