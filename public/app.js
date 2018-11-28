@@ -1,10 +1,10 @@
 'use strict'
 
-const STATE = {
+const STATE = {                              //declare global STATE object
     blogPosts: null,
 }
 
-function getBlogPosts() {
+function getBlogPosts() {                   //API call to GET blog posts
     const settings = {
         url: '/blog-posts',
         dataType: 'json',
@@ -12,14 +12,14 @@ function getBlogPosts() {
     }
 
     $.ajax(settings).then((results) => {
-        STATE.blogPosts = results;
-        displayBlogPosts();
+        STATE.blogPosts = results;          //add data to STATE
+        displayBlogPosts();                 //call display function
     }).catch(showError);
     
     console.log(STATE);
 }
 
-function deleteBlogPost(id) {
+function deleteBlogPost(id) {                //API call to DELETE blog posts
     const settings = {
         url: `/blog-posts/${id}`,
         dataType: 'json',
@@ -27,16 +27,16 @@ function deleteBlogPost(id) {
     }
 
     $.ajax(settings).catch(showError);
-    getBlogPosts();
+    getBlogPosts();                         //Retreive updated blog posts in STATE & display after deletion
 }
 
-function displayBlogPosts() {
+function displayBlogPosts() {               //Pass each blog post to render function & update DOM
     const blogPosts = STATE.blogPosts.map((post, index) => renderBlogPost(post, index));
     $('.js-blog-posts').prop('hidden', false);
     $('.js-blog-posts').html(blogPosts);
 }
 
-function renderBlogPost(post, index) {
+function renderBlogPost(post, index) {      //HTML template for blog post
     const title = post.title;
     const content = post.content;
     const author = post.author;
@@ -50,23 +50,23 @@ function renderBlogPost(post, index) {
     `
 }
 
-function clickDeletePost() {
+function clickDeletePost() {                //Event listener for Delete Post button
     $('body').on('click', '.js-delete', function(event) {
         event.preventDefault();
         const index = $(event.target).attr('data-index');
         const id = STATE.blogPosts[index].id;
-        deleteBlogPost(id);
+        deleteBlogPost(id);                 //Delete blog post using id
     });
 }
 
-function showError() {
+function showError() {                      //Display error if API calls fail
     $('.js-message').prop('hidden', false);
     $('.js-message').text('There was an error loading the requested data');
 }
 
-function handleBlog() {
+function handleBlog() {                    
     getBlogPosts();
     clickDeletePost();
 }
 
-$(handleBlog);
+$(handleBlog);                              //Document ready function
